@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devarshi's DevOps App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 650px;
+            margin: 80px auto;
+            padding: 20px;
+            text-align: center;
+            background: #f4f7fb;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px #0001;
+        }
+        button {
+            padding: 12px 20px;
+            background: #1769e0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Hello from Devarshi!</h1>
+        <p>My first Docker full-stack project 🚀</p>
+        <button onclick="getBackendData()">Fetch Backend Data</button>
+        <div id="result">Click the button to contact the backend API.</div>
+    </div>
+
+    <script>
+        async function getBackendData() {
+            const result = document.getElementById("result");
+            result.textContent = "Loading...";
+
+            try {
+                const response = await fetch("/api");
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+
+                const data = await response.json();
+                result.textContent =
+                    data.message + "\nStatus: " + data.status;
+            } catch (error) {
+                result.textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
