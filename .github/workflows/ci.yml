@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  validate:
+  validate-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,31 @@ jobs:
 
       - name: Build Frontend Image
         run: docker build -t devarshi-frontend:test ./website
+
+      - name: Set up Docker Buildx
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'ref/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Backend
+        if: github.event_name == 'push' && github.ref == 'ref/heads/main'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: techdeva002/devarshi-backend:latest
+
+      - name: Build and Push Frontend
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./website
+          push: true
+          tags: techdeva002/devarshi-frontend:latest
+
